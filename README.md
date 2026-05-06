@@ -1,102 +1,157 @@
-# 🎯 Salient Object Detection (SOD) using Encoder-Decoder CNN
+# 🎯 Salient Object Detection (SOD) using Custom Encoder-Decoder CNN
 
 ## 📌 Project Overview
 
-This project implements a Deep Learning system designed to identify and segment the most visually **salient (important) objects** within an image.
+This project implements a complete **end-to-end Salient Object Detection (SOD)** system.
 
-Using a custom **U-Net inspired architecture**, the model converts raw RGB images into precise binary segmentation masks.
+Using a custom deep learning architecture, the system automatically **segments the most visually dominant objects** in an image.
 
----
+The pipeline covers the full ML lifecycle:
 
-## 📊 Key Performance Metrics
-
-| Metric   | Score  |
-| -------- | ------ |
-| IoU      | 0.7079 |
-| F1-Score | 0.8044 |
-| MAE      | 0.0958 |
-| Recall   | 0.8699 |
+* Data merging
+* Preprocessing & augmentation
+* Training with hybrid loss
+* Evaluation & visualization
 
 ---
 
-## 🏗️ System Architecture
+## 📊 Dataset & "Super-Set" Strategy
 
-The model (**SODNet**) follows an **Encoder-Decoder structure**:
+* **Source:** DUTS Dataset
+* **Total Samples:** 15,572 image-mask pairs
+
+### 🔹 Super-Set Approach
+
+To maximize diversity and avoid bias from predefined splits:
+
+* DUTS-TR and DUTS-TE were **merged into one dataset**
+* A custom randomized split was applied:
+
+| Split      | Percentage |
+| ---------- | ---------- |
+| Train      | 70%        |
+| Validation | 15%        |
+| Test       | 15%        |
+
+---
+
+## 🔄 Preprocessing & Augmentation
+
+### Preprocessing
+
+* Resize images to **224 × 224**
+* Normalize pixel values to **[0,1]**
+
+### Augmentations
+
+* Random Horizontal Flip
+* Random Vertical Flip
+* Color Jitter
+* Random Rotation (±15°)
+
+---
+
+## 🏗️ Model Architecture (SODNet)
+
+The model follows a **symmetrical Encoder-Decoder design** optimized for spatial accuracy.
 
 ### 🔹 Encoder
 
-* 5 convolutional blocks
-* Each block includes:
+* 5 blocks:
 
-  * Convolution
-  * Batch Normalization
-  * ReLU activation
-* Reduces spatial resolution while extracting features
-
-### 🔹 Bottleneck
-
-* 1024-channel latent representation
-* Captures high-level semantic information
+  * Conv → BatchNorm → ReLU → MaxPool
+* Extracts deep semantic features
+* Additional Conv layers for deeper abstraction
 
 ### 🔹 Decoder
 
-* Uses `ConvTranspose2d` for upsampling
-* Restores spatial resolution back to **224 × 224**
+* Uses **ConvTranspose2d** for upsampling
+* Conv → BatchNorm → ReLU after each step
 
 ### 🔹 Skip Connections
 
-* Implemented using `torch.cat`
-* Helps preserve fine details (edges, object boundaries)
+* Feature concatenation between encoder & decoder
+* Preserves fine details (edges, boundaries)
+
+### 🔹 Regularization
+
+* Dropout (0.2)
+* Batch Normalization
 
 ---
 
-## 📊 Qualitative Results
+## ⚙️ Training Setup
 
-Each output visualization includes:
+### 📉 Hybrid Loss Function
+
+L = \mathrm{BCE} + 0.5(1 - \mathrm{IoU})
+
+* Combines:
+
+  * Pixel-wise accuracy (BCE)
+  * Shape overlap (IoU)
+
+### ⚙️ Configuration
+
+* **Optimizer:** Adam
+* **Learning Rate:** 1 × 10⁻³
+* **Epochs:** 25
+* **Early Stopping:** Based on validation loss
+
+---
+
+## 📈 Final Results & Metrics
+
+Evaluated on an unseen test set (**2,336 images**):
+
+| Metric    | Score  | Analysis               |
+| --------- | ------ | ---------------------- |
+| IoU       | 0.7079 | High spatial overlap   |
+| Precision | 0.7853 | Low false positives    |
+| Recall    | 0.8699 | Strong object coverage |
+| F1-Score  | 0.8044 | Balanced performance   |
+| MAE       | 0.0958 | Low pixel error        |
+
+---
+
+## 🖼 Visual Demonstration
+
+Each prediction includes:
 
 1. Input Image
 2. Ground Truth
 3. Predicted Heatmap
-4. Saliency Overlay
+4. Overlay Result
 
 ---
 
-## 📂 Repository Structure
+## 📁 Repository Structure
 
-```
-├── sod_model.py        # Model architecture (SODNet)
-├── data_loader.py      # Dataset handling + augmentations
-├── train.py            # Training pipeline
-├── evaluate.py         # Evaluation metrics
-├── generate_grid.py    # Visualization generator
-├── training_log.json   # Training history (25 epochs)
+```id="repo-tree"
+├── data_loader.py      # Dataset loader (merged DUTS)
+├── sod_model.py       # Encoder-Decoder CNN (SODNet)
+├── train.py           # Training pipeline + logging
+├── evaluate.py        # Evaluation metrics + reports
+├── generate_grid.py   # Visualization (4-row comparison)
 ├── checkpoints/
-│   └── best.pt         # Trained model weights
-└── requirements.txt    # Dependencies
+│   └── best.pt        # Best trained model
 ```
 
 ---
 
 ## ⚙️ Installation
 
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/your-username/sod-project.git
-cd sod-project
-```
-
-### 2. Create Virtual Environment (Optional but Recommended)
-
-```bash
+```bash id="install-steps"
+# Create virtual environment
 python -m venv venv
-source venv/bin/activate     # Linux / Mac
-venv\Scripts\activate        # Windows
-```
 
-### 3. Install Dependencies
+# Activate
+# Windows
+venv\Scripts\activate
+# Linux / Mac
+source venv/bin/activate
 
-```bash
+# Install dependencies
 pip install -r requirements.txt
 ```
 
@@ -104,68 +159,60 @@ pip install -r requirements.txt
 
 ## 🚀 Usage
 
-### 🔹 Train the Model
+### Train
 
-```bash
+```bash id="train-cmd"
 python train.py
 ```
 
-### 🔹 Evaluate the Model
+### Evaluate
 
-```bash
+```bash id="eval-cmd"
 python evaluate.py
 ```
 
-### 🔹 Generate Visual Results
+### Generate Visual Results
 
-```bash
+```bash id="vis-cmd"
 python generate_grid.py
 ```
 
 ---
 
-## 📦 Dataset
+## 🧠 Key Insights
 
-* Uses **DUTS Dataset**
-* Includes:
-
-  * Training images
-  * Ground truth masks
-* Data augmentations:
-
-  * Random Flip
-  * Rotation
-  * Color Jitter
+* High **Recall (0.8699)** → captures full object regions
+* Strong **IoU (0.7079)** → accurate segmentation
+* Balanced **F1-score** → reliable performance overall
 
 ---
 
 ## 🎓 Conclusion
 
-The model demonstrates strong performance in detecting salient objects even in complex scenes.
+The model demonstrates strong robustness in detecting salient objects even in complex scenes.
 
-* High **Recall (0.8699)** → captures full object regions effectively
-* Suitable for:
+### 📌 Applications
 
-  * Background removal
-  * Autonomous driving
-  * Medical image segmentation
+* Background removal
+* Autonomous driving
+* Medical image segmentation
 
 ---
 
-## 📌 Future Improvements
+## 🚀 Future Improvements
 
-* Attention mechanisms (Attention U-Net)
+* Attention U-Net
 * Transformer-based encoders
 * Real-time inference optimization
 
 ---
 
-## 🧠 Author
+## ⭐ Author
 
 **Trimi**
 
 ---
 
-## ⭐ If you like this project
+## ⭐ Support
 
-Give it a star ⭐ on GitHub!
+If you found this project useful, consider giving it a ⭐
