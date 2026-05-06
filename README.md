@@ -1,4 +1,4 @@
-# 🎯 Salient Object Detection (SOD) using Custom Encoder-Decoder CNN
+# 🎯 Salient Object Detection (SOD)
 
 ## 📌 Project Overview
 
@@ -125,19 +125,16 @@ Each prediction includes:
 
 ---
 
-## 📁 Repository Structure
-
-```id="repo-tree"
-├── data_loader.py      # Dataset loader (merged DUTS)
-├── sod_model.py       # Encoder-Decoder CNN (SODNet)
-├── train.py           # Training pipeline + logging
-├── evaluate.py        # Evaluation metrics + reports
-├── generate_grid.py   # Visualization (4-row comparison)
-├── checkpoints/
-│   └── best.pt        # Best trained model
-```
-
----
+## 🏗 Repository Structure
+├── checkpoints/            # Trained model weights (best.pt)  
+├── visualizations/         # Output results and grids  
+├── data_loader.py          # Data pipeline (resize, normalize, augmentations)  
+├── sod_model.py            # SODNet architecture (Encoder-Decoder CNN)  
+├── train.py                # Training loop (BCE + IoU optimization)  
+├── evaluate.py             # Evaluation metrics (IoU, F1, MAE)  
+├── generate_images.py      # Inference on single images (demo)  
+├── training_log.json       # Training history across epochs  
+├── requirements.txt        # Dependencies list  
 
 ## ⚙️ Installation
 
