@@ -128,13 +128,13 @@ Each prediction includes:
 ## 📁 Repository Structure
 
 ```id="repo-tree"
-├── data_loader.py      # Handles data loading, preprocessing, and augmentations
-├── sod_model.py        # Defines the Encoder-Decoder CNN architecture (SODNet)
-├── train.py            # Runs training loop, loss computation, and optimization
-├── evaluate.py         # Computes metrics to evaluate model performance
-├── training_log.json   # Stores training history (loss and metrics per epoch)
+├── data_loader.py      # Dataset loader (merged DUTS)
+├── sod_model.py       # Encoder-Decoder CNN (SODNet)
+├── train.py           # Training pipeline + logging
+├── evaluate.py        # Evaluation metrics + reports
+├── generate_grid.py   # Visualization (4-row comparison)
 ├── checkpoints/
-│   └── best.pt         # Saved best model weights for inference
+│   └── best.pt        # Best trained model
 ```
 
 ---
@@ -190,3 +190,29 @@ python generate_grid.py
 ## 🎓 Conclusion
 
 The model demonstrates strong robustness in detecting salient objects even in complex scenes.
+
+### 📌 Applications
+
+* Background removal
+* Autonomous driving
+* Medical image segmentation
+
+---
+
+## 🚀 Future Improvements
+
+* Attention U-Net
+* Transformer-based encoders
+* Real-time inference optimization
+
+---
+
+## ⭐ Author
+
+**Trimi**
+
+---
+
+## ⭐ Support
+
+If you found this project useful, consider giving it a ⭐
