@@ -187,29 +187,3 @@ python generate_grid.py
 ## 🎓 Conclusion
 
 The model demonstrates strong robustness in detecting salient objects even in complex scenes.
-
-### 📌 Applications
-
-* Background removal
-* Autonomous driving
-* Medical image segmentation
-
----
-
-## 🚀 Future Improvements
-
-* Attention U-Net
-* Transformer-based encoders
-* Real-time inference optimization
-
----
-
-## ⭐ Author
-
-**Trimi**
-
----
-
-## ⭐ Support
-
-If you found this project useful, consider giving it a ⭐
