@@ -1,82 +1,171 @@
-# Salient Object Detection — End-to-End ML Project
-### Cohort V | Project #3
+# 🎯 Salient Object Detection (SOD) using Encoder-Decoder CNN
+
+## 📌 Project Overview
+
+This project implements a Deep Learning system designed to identify and segment the most visually **salient (important) objects** within an image.
+
+Using a custom **U-Net inspired architecture**, the model converts raw RGB images into precise binary segmentation masks.
 
 ---
 
-## Project Structure
+## 📊 Key Performance Metrics
+
+| Metric   | Score  |
+| -------- | ------ |
+| IoU      | 0.7079 |
+| F1-Score | 0.8044 |
+| MAE      | 0.0958 |
+| Recall   | 0.8699 |
+
+---
+
+## 🏗️ System Architecture
+
+The model (**SODNet**) follows an **Encoder-Decoder structure**:
+
+### 🔹 Encoder
+
+* 5 convolutional blocks
+* Each block includes:
+
+  * Convolution
+  * Batch Normalization
+  * ReLU activation
+* Reduces spatial resolution while extracting features
+
+### 🔹 Bottleneck
+
+* 1024-channel latent representation
+* Captures high-level semantic information
+
+### 🔹 Decoder
+
+* Uses `ConvTranspose2d` for upsampling
+* Restores spatial resolution back to **224 × 224**
+
+### 🔹 Skip Connections
+
+* Implemented using `torch.cat`
+* Helps preserve fine details (edges, object boundaries)
+
+---
+
+## 📊 Qualitative Results
+
+Each output visualization includes:
+
+1. Input Image
+2. Ground Truth
+3. Predicted Heatmap
+4. Saliency Overlay
+
+---
+
+## 📂 Repository Structure
 
 ```
-sod_project/
-├── data_loader.py          ← Dataset loading, preprocessing, augmentation
-├── sod_model.py            ← CNN models (SODNet baseline + SODNetPlus improved)
-├── train.py                ← Training loop with checkpoint + resume support
-├── evaluate.py             ← Metrics (IoU, Precision, Recall, F1) + visualizations
-├── app.py                  ← Gradio demo app
-├── SOD_Project.ipynb       ← Master Colab notebook (run everything from here)
-├── requirements.txt
-├── dataset/                ← Put your dataset here (created at runtime)
-│   ├── images/
-│   └── masks/
-├── checkpoints/            ← Saved model weights (created at runtime)
-└── outputs/                ← Evaluation visualizations (created at runtime)
+├── sod_model.py        # Model architecture (SODNet)
+├── data_loader.py      # Dataset handling + augmentations
+├── train.py            # Training pipeline
+├── evaluate.py         # Evaluation metrics
+├── generate_grid.py    # Visualization generator
+├── training_log.json   # Training history (25 epochs)
+├── checkpoints/
+│   └── best.pt         # Trained model weights
+└── requirements.txt    # Dependencies
 ```
 
 ---
 
-## Quick Start (Google Colab)
+## ⚙️ Installation
 
-1. Upload `sod_project.zip` to Colab
-2. Open `SOD_Project.ipynb`
-3. Run cells top to bottom — each section is self-contained
+### 1. Clone the Repository
 
----
-
-## Models
-
-| Model | Architecture | Features |
-|---|---|---|
-| `SODNet` (baseline) | Encoder-Decoder CNN | 4 conv blocks, no skip connections |
-| `SODNetPlus` (improved) | U-Net style | BatchNorm + Dropout + skip connections |
-
----
-
-## Loss Function
-
-```
-Loss = BCE(pred, target) + 0.5 × (1 − IoU(pred, target))
+```bash
+git clone https://github.com/your-username/sod-project.git
+cd sod-project
 ```
 
----
+### 2. Create Virtual Environment (Optional but Recommended)
 
-## Dataset Format
-
-```
-dataset/
-  images/   ←  .jpg or .png RGB images
-  masks/    ←  .png grayscale binary masks (same filename as images)
+```bash
+python -m venv venv
+source venv/bin/activate     # Linux / Mac
+venv\Scripts\activate        # Windows
 ```
 
-Supported datasets: **DUTS**, **ECSSD**, **MSRA10K**
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
 
 ---
 
-## Evaluation Metrics
+## 🚀 Usage
 
-- **IoU** — Intersection over Union  
-- **Precision** — TP / (TP + FP)  
-- **Recall** — TP / (TP + FN)  
-- **F1-Score** — Harmonic mean of Precision & Recall  
-- **MAE** — Mean Absolute Error (pixel-level)
+### 🔹 Train the Model
+
+```bash
+python train.py
+```
+
+### 🔹 Evaluate the Model
+
+```bash
+python evaluate.py
+```
+
+### 🔹 Generate Visual Results
+
+```bash
+python generate_grid.py
+```
 
 ---
 
-## Checkpoint Resume (Bonus Feature)
+## 📦 Dataset
 
-Training automatically saves `checkpoints/latest.pt` after every epoch.  
-If Colab disconnects, simply re-run the training cell — it will resume from the last epoch automatically.
+* Uses **DUTS Dataset**
+* Includes:
+
+  * Training images
+  * Ground truth masks
+* Data augmentations:
+
+  * Random Flip
+  * Rotation
+  * Color Jitter
 
 ---
 
-## Author
+## 🎓 Conclusion
 
-> Replace with your name and cohort details before submission.
+The model demonstrates strong performance in detecting salient objects even in complex scenes.
+
+* High **Recall (0.8699)** → captures full object regions effectively
+* Suitable for:
+
+  * Background removal
+  * Autonomous driving
+  * Medical image segmentation
+
+---
+
+## 📌 Future Improvements
+
+* Attention mechanisms (Attention U-Net)
+* Transformer-based encoders
+* Real-time inference optimization
+
+---
+
+## 🧠 Author
+
+**Trimi**
+
+---
+
+## ⭐ If you like this project
+
+Give it a star ⭐ on GitHub!
