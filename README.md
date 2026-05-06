@@ -125,8 +125,9 @@ Each prediction includes:
 
 ---
 
-# 📁 Repository Structure
+## 📁 Repository Structure
 
+```id="repo-tree"
 ├── data_loader.py      # Handles data loading, preprocessing, and augmentations
 ├── sod_model.py        # Defines the Encoder-Decoder CNN architecture (SODNet)
 ├── train.py            # Runs training loop, loss computation, and optimization
@@ -134,6 +135,9 @@ Each prediction includes:
 ├── training_log.json   # Stores training history (loss and metrics per epoch)
 ├── checkpoints/
 │   └── best.pt         # Saved best model weights for inference
+```
+
+---
 
 ## ⚙️ Installation
 
