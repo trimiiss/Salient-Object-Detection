@@ -180,7 +180,7 @@ python generate_grid.py
 
 * High **Recall (0.8699)** → captures full object regions
 * Strong **IoU (0.7079)** → accurate segmentation
-* Balanced **F1-score** → reliable performance overall
+* Balanced **F1-score**  → reliable performance overall
 
 ---
 
